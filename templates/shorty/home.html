@@ -1,0 +1,55 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8"/>
+        <meta name="viewport" content="width=device-width,initial-scale=1"/>
+        <title>URL Shortener</title>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+        <style>
+          body{
+            background:#0b1220;
+            color:#eaf1ff
+          }
+          .out{
+            background:#0f1626;
+            border:1px dashed #1f2f49;
+            padding:10px;
+            border-radius:10px;
+            word-break:break-all
+          }
+          .muted{color:#94a3b8}
+        </style>
+    </head>
+    <body class="container mt-5">
+        <h2>URL Shortener</h2>
+        <form method="post">
+            {% csrf_token %}
+            <div class="form-group">
+                {{ form.long_url.label_tag }}
+                {{ form.long_url }}
+            </div>
+            <div class="form-group">
+                {{ form.custom_code.label_tag }}
+                {{ form.custom_code }}
+                <small class="form-text text-muted">{{ form.custom_code.help_text }}</small>
+            </div>
+            <button type="submit" class="btn btn-primary">Shorten</button>
+        </form>
+        {% if short_url %}
+        <div class="alert alert-success mt-3">
+            Short URL: <a href="{{ short_url }}">{{ short_url }}</a>
+        </div>
+        {% endif %}
+        <div class="out">
+            <h4 class="mt-4">Recent Links</h4>
+            <ul>
+                {% for link in recent %}
+                <li><a href="/{{ link.code }}">{{ request.build_absolute_uri }}{{ link.code }}</a> → {{ link.long_url }}</li>
+                {% empty %}
+                <li>No links yet.</li>
+                {% endfor %}
+            </ul>
+        </div>
+    </body>
+</html>
